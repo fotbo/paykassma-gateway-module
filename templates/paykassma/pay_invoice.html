@@ -1,0 +1,115 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static "paykassma/paykassma.css" %}">
+    <script src="{% static "paykassma/paykassma.js" %}"></script>
+    <title>Pay Invoice</title>
+</head>
+<body data-js-vars="{{ payment_systems }}">
+<div class="wrap">
+  <div class="logos">
+    <img src="{% static "logos/Fotbo.svg" %}">
+  </div>
+  <div class="payment_info_block">
+      <pre class="payment_info_company">
+        {{ company_info  }}
+      </pre>
+      <pre class="payment_info_price">
+      {{ pay_message }}
+      </pre>
+  </div>
+      <form 
+          action="{% url 'billing:gateway-action' gateway='paykassma' action_name='charge' %}?fleio-token={{ token }}&invoice={{ invoice_id }}" 
+          method="post"
+          class="form">
+          <div style="width: 100%;">
+              <h1 class="label">{% trans "Please choose your currency" %}</h1>
+              <div>
+                <label for="invoice_amount">Invoice Amount:</label>
+                <input type="text" id="invoice_amount" name="invoice_amount" value="{{ invoice_balance }} EUR" readonly>
+
+                <label for="converted_value">Converted Value:</label>
+                <input type="text" id="converted_value" name="converted_value" value="0" readonly>
+
+                <label for="currency">Choose Currency:</label>
+                <select id="currency" name="currency">
+                    <option value="">Select Currency</option>
+                </select>
+          </div>
+
+      </form>
+
+      
+
+      <!-- invoice items -->
+      <div></div>
+      <table class="stripe-items-table">
+          <thead class="table_head">
+              <th class="left-align">Name</th>
+              <th class="right-align">Quantity</th>
+              <th class="right-align">Unit price</th>
+              <th class="right-align">Sub total</th>
+          </thead>
+          <tbody class="table_body">
+              {% for item in invoice_items %}
+              <tr>
+                <td class="left-align description-td">
+                  <span class="wrap-text-content">
+                      <span class="item-description content-margin">{{item.description}}</span>
+                  </span>
+                </td>
+                <td class="right-align vertical-align-top">
+                  <div class="content-margin">
+                    <span>1</span>
+                  </div>
+                </td>
+                <td class="right-align vertical-align-top">
+                  <div class="content-margin">
+                    <span>{{item.amount}} {{ invoice_currency }}</span>
+                  </div>
+                </td>
+                <td class="right-align vertical-align-top">
+                  <div class="content-margin">
+                    <span>{{item.amount}} {{ invoice_currency }}</span>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
+      <div class="totals-div">
+          <span>Sub total: {{ invoice_subtotal }} {{ invoice_currency }}</span>
+          {% for tax in invoice_taxes %}
+          <span>
+          {{tax.name}} {{tax.amount}} {{ invoice_currency }}
+          </span>
+          {% endfor %}
+          <span>Total: {{ invoice_total }} {{ invoice_currency }}</span>
+          <div class="remaining_balance">
+            Remaining balance: {{ invoice_balance }} {{ invoice_currency }}
+          </div>
+          <button id="card-button" data-secret="{{ client_secret }}">Submit Payment</button>
+      </div>
+  </div>
+</div>
+</body>
+<script>
+  const payment_info_price = document.querySelector('.payment_info_price')
+  const text = payment_info_price?.innerHTML
+    if(text) {
+        const numbers = text.match(/([\d.]+)/g);
+        const numericValues = numbers.map(Number);
+
+
+        if(numericValues && numericValues?.length > 1) {
+            payment_info_price.innerHTML = `<span class="payment_info_price_pay">Pay</span> <span class="payment_info_price_price">€${numericValues[0]?.toFixed(2)}</span> <span class="payment_info_price_invoice">for invoice ${numericValues[1]}</span>`
+        }
+
+    }
+</script>
+</html>

@@ -1,0 +1,421 @@
+@font-face {
+  font-family: Inter;
+  src: local('Inter'),
+       url('../fonts/Inter-Medium.ttf') format("truetype");
+}
+
+.wrap {
+  display: flex;
+  max-width: 1440px;
+  padding: 64px 23%;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+.payment_info_block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  align-self: stretch;
+}
+
+.payment_info_company {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  color: #B8B8B8;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  white-space: pre-line;
+}
+
+.payment_info_price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.payment_info_price_pay {
+  color: var(--Text-Dark-Grey, #222);
+  /* H2 */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 100% */
+  letter-spacing: -0.4px;
+}
+
+.payment_info_price_price {
+  color: var(--Text-Dark-Grey, #222);
+  /* H1 */
+  font-family: Inter;
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 40px; /* 117.647% */
+  letter-spacing: -1.7px; 
+}
+
+.payment_info_price_invoice {
+  color: var(--Text-Dark-Grey, #222);
+  /* Text Normal 2 */
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 0.14px;
+}
+
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+  margin: 40px 0px 40px 0px;
+}
+
+.label {
+  color: var(--Text-Dark-Grey, #222);
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 100% */
+  letter-spacing: -0.4px;
+  margin-bottom: 24px;
+}
+
+.card_wrap {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  align-self: stretch;
+}
+
+
+
+
+button {
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  text-decoration: none;
+  color: #fff;
+  background: var(--Accent-Main, #FA7342);
+  white-space: nowrap;
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+  margin-top: 28px;
+  cursor: pointer;
+}
+
+.remaining_balance {
+  color: var(--Text-Light-grey, #B8B8B8);
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: 0.12px;
+}
+
+#card-button[disabled] {
+  background: #808080;
+}
+
+#card-errors {
+  height: 20px;
+  padding: 4px 0;
+  color: #fa755a;
+}
+
+.form-row {
+  width: 100%;
+  float: left;
+}
+
+.token {
+  color: #32325d;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 500;
+}
+
+.wrapper {
+  width: 670px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+#stripe-token-handler {
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  padding: 20px 30px;
+  border-radius: 0 0 4px 4px;
+  box-sizing: border-box;
+  box-shadow: 0 50px 100px rgba(50, 50, 93, 0.1),
+    0 15px 35px rgba(50, 50, 93, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.1);
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+  transform: translateY(0);
+  opacity: 1;
+  background-color: white;
+}
+
+#stripe-token-handler.is-hidden {
+  opacity: 0;
+  transform: translateY(-80px);
+}
+
+/* charge card form */
+#charge-card {
+  height: 0;
+}
+#go-back {
+  margin-top: 20px;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.spinner {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.spinner div {
+  transform-origin: 40px 40px;
+  animation: spinner 1.2s linear infinite;
+}
+.spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 37px;
+  width: 6px;
+  height: 18px;
+  border-radius: 20%;
+  background: #9ccc65;
+}
+.spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* charge card form end */
+
+
+/**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+.StripeElement {
+  width: 392px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--Text-Extra-Light-Grey, #D3D3D3);
+  background: var(--White, #FFF);
+}
+
+.card_expiry {
+  width: 88px;
+  
+}
+
+.card_cvc {
+  width: 62px;
+  text-align: center;
+}
+
+.StripeElement--focus {
+  border-color: var(--Accent-Violet, #6749E6);
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
+.stripe-items-table {
+  width: 100%;
+  border-bottom: 1px solid var(--Background-Grey, #F2F2F2);
+  margin-bottom: 14px;
+
+}
+
+.table_head {
+  color: var(--Text-Light-grey, #B8B8B8);
+  /* Text Small */
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: 0.12px;
+}
+.table_body {
+  color: var(--Text-Dark-Grey, #222);
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 0.14px;
+}
+.right-align {
+  text-align: right;
+}
+
+.left-align {
+  text-align: left;
+}
+
+.fl-detail {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.wrap-text-content {
+  word-break: break-all;
+}
+
+.item-description {
+  white-space: pre-wrap;
+}
+
+.content-margin {
+  margin: 1em 0;
+}
+
+.vertical-align-top {
+  vertical-align: top;
+}
+
+.description-td {
+  width: 60%;
+}
+
+.totals-div {
+  color: var(--Text-Dark-Grey, #222);
+  font-family: Inter;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin-left: auto;
+}
+
+@media screen and (max-width: 1024px) {
+  .wrap {
+    padding: 64px 15%;
+  }
+}
+
+@media screen and (max-width: 720px) {
+
+  .wrap {
+    padding: 64px 12%;
+  }
+
+  .description-td {
+    width: 40%;
+  }
+  .stripe-items-table {
+    width: 90%;
+
+  }
+  .totals-div {
+    width: 90%;
+  }
+}
