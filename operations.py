@@ -21,21 +21,20 @@ class PaymentProcess():
     rq_data: Dict[str, str]
 
     def charge_status(self, status: str) -> TransactionStatus:
-        paid_statuses = ['paid', 'paid_over']
-        error_statuses = ['fail', 'system_fail', 'wrong_amount', 'cancel']
-        if status in paid_statuses:
+        error_statuses = ['Failed', 'Rejected', 'Cancel']
+        if status == 'Success':
             return TransactionStatus.SUCCESS
         elif status in error_statuses:
             raise exceptions.GatewayException(
-                f"Transaction is Fail. Status - {self.rq_data.get('status').upper()}. Invoice - {self.rq_data.get('order_id')}"
+                f"Transaction is Fail. Status - {self.rq_data.get('status').upper()}. Invoice - {self.rq_data.get('custom_transaction_id')}"
                 )
 
     def process_charge(self) -> None:
-        gateway = Gateway.objects.get(name='cryptomus')
+        gateway = Gateway.objects.get(name='paykassma')
         external_id = self.rq_data.get('order_id', None)
         transaction_id = None
         transaction_status = self.charge_status(self.rq_data.get('status'))
-        invoice_id = self.rq_data.get('order_id', None)
+        invoice_id = self.rq_data.get('custom_transaction_id', None)
         if external_id is not None:
             try:
                 existing_transaction = Transaction.objects.get(
@@ -43,7 +42,7 @@ class PaymentProcess():
                     gateway=gateway)
                 transaction_id = existing_transaction.id
             except Transaction.DoesNotExist:
-                real_amount = round(float(self.rq_data.get('amount')), 2)
+                real_amount = self.rq_data.get('real_amount')
                 serializer_data = {'invoice': invoice_id,
                                    'external_id': external_id,
                                    'amount': real_amount,
@@ -69,16 +68,16 @@ class PaymentProcess():
         gateway.log_callback(external_id=external_id,
                              status=self.rq_data.get('status'),
                              data=datetime.datetime.now(),
-                             error=(self.rq_data.get('status') == 'fail'))
+                             error=(self.rq_data.get('status') == 'Failed'))
         if transaction_status == TransactionStatus.SUCCESS:
             activity_helper.start_generic_activity(
-                category_name='cryptomus',
-                activity_class='cryptomus payment',
+                category_name='paykassma',
+                activity_class='paykassma',
                 invoice_id=invoice_id
             )
             invoice_add_payment(
                 invoice_id=invoice_id,
-                amount=self.rq_data.get('amount'),
+                amount=self.rq_data.get('real_amount'),
                 currency_code='EUR',
                 transaction_id=transaction_id,
             )

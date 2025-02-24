@@ -9,7 +9,7 @@
     <script src="{% static "paykassma/paykassma.js" %}"></script>
     <title>Pay Invoice</title>
 </head>
-<body data-js-vars="{{ payment_systems }}">
+<body data-js-vars="{{ payment_systems }}" data-currensies-rate="{{ currencies_rate }}">
 <div class="wrap">
   <div class="logos">
     <img src="{% static "logos/Fotbo.svg" %}">

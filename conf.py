@@ -8,6 +8,7 @@ class Conf(object):
         self.return_url = self.paykassma_settings.get('return_url')
         self.api_url = self.paykassma_settings.get('api_url')
         self.webhook_id = self.paykassma_settings.get('webhook_id')
+        self.webhook_private_key = self.paykassma_settings.get('webhook_private_key')
         self.payment_systems = [
             {
                 "currency_name": "Rupee",
@@ -50,11 +51,6 @@ class Conf(object):
                 "payment_system": ["flouci"]
             }
         ]
-
-    def get_payment_system(self, currency_id: str):
-        for payment in self.payment_systems:
-            if payment.get('currency_id') == currency_id:
-                return payment.get('payment_system')
 
 
 conf = Conf()

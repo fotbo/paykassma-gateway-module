@@ -57,5 +57,8 @@ class Payment:
         }
         res = self.__auth_request(path=path, method='POST', data=data)
         if res.get('success'):
-            return res.get('url')
+            return {
+                'url': res.get('url'),
+                'order_id': res.get('order_id')
+                }
         raise RequestException(res.get('message'))

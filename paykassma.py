@@ -16,6 +16,10 @@ from ...invoicing.serializers import InvoiceItemSerializer
 from .operations import PaymentProcess
 from .services import Payment
 from .conf import conf
+from .utils import (
+    get_payment_system,
+    get_currensies_rate,
+    check_transactions_hash)
 
 
 LOG = logging.getLogger(__name__)
@@ -42,20 +46,34 @@ def return_pay_message(invoice: Invoice, request: HttpRequest) -> str:
     pay_message = _('Pay {} for invoice {}'.format(localized_amount, invoice.pk))
     return pay_message
 
+
+
+
 @gateway_action(methods=['GET'])
 def pay_invoice(request: HttpRequest) -> HttpResponseRedirect:
     invoice_id = request.query_params.get('invoice')
     if invoice_id is None:
         LOG.error("An 'invoice' parameter is required")
-        raise gateway_exceptions.GatewayException("An 'invoice' parameter is required")
+        raise gateway_exceptions.GatewayException(
+            "An 'invoice' parameter is required"
+            )
     try:
-        inv = Invoice.objects.get(pk=invoice_id, client=request.user.get_active_client(request=request))
+        inv = Invoice.objects.get(
+            pk=invoice_id,
+            client=request.user.get_active_client(request=request)
+            )
     except Invoice.DoesNotExist:
         LOG.error('Invoice {} does not exist'.format(invoice_id))
-        raise gateway_exceptions.GatewayException('Invoice {} does not exist'.format(invoice_id))
+        raise gateway_exceptions.GatewayException(
+            'Invoice {} does not exist'.format(invoice_id)
+            )
     if inv.balance <= 0:
-        LOG.info('Invoice {} is already paid'.format(invoice_id), invoice_id=invoice_id)
-        raise gateway_exceptions.InvoicePaymentException('Invoice {} is already paid'.format(invoice_id), invoice_id=invoice_id)
+        LOG.info(
+            'Invoice {} is already paid'.format(invoice_id), invoice_id=invoice_id
+            )
+        raise gateway_exceptions.InvoicePaymentException(
+            'Invoice {} is already paid'.format(invoice_id), invoice_id=invoice_id
+            )
 
     return render(
         template_name='paykassma/pay_invoice.html',
@@ -63,7 +81,9 @@ def pay_invoice(request: HttpRequest) -> HttpResponseRedirect:
         context={
             'pay_message': return_pay_message(inv, request),
             'company_info': inv.client.billing_settings.company_info,
-            'invoice_items': InvoiceItemSerializer(instance=inv.items, many=True).data,
+            'invoice_items': InvoiceItemSerializer(
+                instance=inv.items,
+                many=True).data,
             'invoice_taxes': inv.taxes,
             'invoice_id': inv.pk,
             'invoice_url': inv.frontend_url,
@@ -73,9 +93,11 @@ def pay_invoice(request: HttpRequest) -> HttpResponseRedirect:
             'payment_systems': json.dumps({
                 'payments': conf.payment_systems
             }),
+            'currencies_rate': json.dumps(get_currensies_rate()),
             'token': generate_otp_token_for_request(request=request),
         }
         )
+
 
 @gateway_action(methods=['POST'])
 def charge(request: HttpRequest):
@@ -89,23 +111,32 @@ def charge(request: HttpRequest):
             user_id=user.pk,
             return_url=conf.return_url,
             webhook_id=conf.webhook_id,
-            payment_system=conf.get_payment_system(currency_id)
+            payment_system=get_payment_system(currency_id)
         )
-        return HttpResponseRedirect(res)
+        return HttpResponseRedirect(res.get('url'))
     except Exception as err:
         LOG.error(f"Payment error - {err}")
         return Response(
             {'detail': 'Error'},
             status=status.HTTP_400_BAD_REQUEST)
 
+
 @gateway_action(methods=['POST'])
 def callback(request: HttpRequest) -> Response:
     try:
-        invoice_id = request.data.get('order_id')
-        validate_invoice(invoice_id)
-        payment_process = PaymentProcess(rq_data=request.data)
+        transaction = request.data.get('transactions')[0]
+        invoice_id = transaction.get('custom_transaction_id')
+        validate_invoice(transaction.get('custom_transaction_id'))
+        check_transactions_hash(
+            webhook_access_key=request.data.get('access_key'),
+            webhook_private_key=conf.webhook_private_key,
+            transaction_signature=request.data.get('signature'),
+            transactions=request.data.get('transactions'),
+            invoice=invoice_id)
+        transaction['real_amount'] = Invoice.objects.get(pk=invoice_id).total
+        payment_process = PaymentProcess(rq_data=transaction)
         payment_process.process_charge()
-        return Response({'detail': 'OK'}, status=status.HTTP_200_OK)
+        return Response({'status': 'OK'}, status=status.HTTP_200_OK)
     except Exception as err:
         LOG.error(f"Payment error - {err}")
         return Response(
