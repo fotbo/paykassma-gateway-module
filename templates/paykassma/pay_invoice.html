@@ -3,16 +3,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{% static "paykassma/paykassma.css" %}">
-    <script src="{% static "paykassma/paykassma.js" %}"></script>
-    <title>Pay Invoice</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{% static "paykassma/paykassma.css" %}">
+  <script src="{% static "paykassma/paykassma.js" %}"></script>
+  <title>Pay Invoice</title>
 </head>
-<body data-js-vars="{{ payment_systems }}" data-currensies-rate="{{ currencies_rate }}">
+<body data-js-vars='{{ payment_systems }}' data-currensies-rate='{{ currencies_rate }}'>
+
 <div class="wrap">
   <div class="logos">
     <img src="{% static "logos/Fotbo.svg" %}">
+    
+    <img src="{% static "logos/Paykassma.svg" %}">
   </div>
   <div class="payment_info_block">
       <pre class="payment_info_company">
@@ -26,19 +29,40 @@
           action="{% url 'billing:gateway-action' gateway='paykassma' action_name='charge' %}?fleio-token={{ token }}&invoice={{ invoice_id }}" 
           method="post"
           class="form">
+          <input type="hidden" id="invoice_amount_input" name="invoice_amount" value="{{ invoice_balance }} EUR">
+          <input type="hidden" id="currency_input" name="currency" value="INR">
+          <input type="hidden" id="converted_value_input" name="converted_value" value="0">
           <div style="width: 100%;">
-              <h1 class="label">{% trans "Please choose your currency" %}</h1>
-              <div>
-                <label for="invoice_amount">Invoice Amount:</label>
-                <input type="text" id="invoice_amount" name="invoice_amount" value="{{ invoice_balance }} EUR" readonly>
+              <h1 class="title-curr">{% trans "Please choose your currency" %}</h1>
 
-                <label for="converted_value">Converted Value:</label>
-                <input type="text" id="converted_value" name="converted_value" value="0" readonly>
+              <div class='payment-info-block'>
+                <div class="payment-info-item">
+                  <span  class="value-name">Invoice Amount</span>
+                  <span id="invoice_amount" class="value-data">{{ invoice_balance }} EUR</span>
+                </div>
 
-                <label for="currency">Choose Currency:</label>
-                <select id="currency" name="currency">
-                    <option value="">Select Currency</option>
-                </select>
+                <div class='payment-select-block'>
+                  <span class="value-name">Choose Currency</span>
+                  <div class="dropdown">
+                    <input type="checkbox" class="dropdown__switch" id="filter-switch" hidden />
+                    <label for="filter-switch" class="dropdown__options-filter">
+                      <ul class="dropdown__filter" role="listbox" tabindex="-1">
+                        <li class="dropdown__filter-selected" aria-selected="true">
+                          Rupee
+                        </li>
+                        <li>
+                          <ul class="dropdown__select">
+                          </ul>
+                        </li>
+                      </ul>			
+                    </label>
+                  </div>
+                </div>
+
+                <div class="payment-info-item">
+                  <span class="value-name">Converted Value</span>
+                  <span id='converted_value' class="value-data"></span>
+                </div>
           </div>
 
       </form>
@@ -46,7 +70,6 @@
       
 
       <!-- invoice items -->
-      <div></div>
       <table class="stripe-items-table">
           <thead class="table_head">
               <th class="left-align">Name</th>
@@ -103,7 +126,7 @@
   const text = payment_info_price?.innerHTML
     if(text) {
         const numbers = text.match(/([\d.]+)/g);
-        const numericValues = numbers.map(Number);
+        const numericValues = numbers?.map(Number);
 
 
         if(numericValues && numericValues?.length > 1) {

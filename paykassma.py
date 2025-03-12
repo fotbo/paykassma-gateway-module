@@ -103,6 +103,7 @@ def pay_invoice(request: HttpRequest) -> HttpResponseRedirect:
 def charge(request: HttpRequest):
     user = request.user.get_active_client(request=request)
     currency_id = request.data.get('currency')
+    print(currency_id)
     try:
         res = payment.create(
             amount=request.data.get('converted_value'),

@@ -1,7 +1,12 @@
-@font-face {
-  font-family: Inter;
-  src: local('Inter'),
-       url('../fonts/Inter-Medium.ttf') format("truetype");
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+li {
+  list-style: none;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
 }
 
 .wrap {
@@ -93,7 +98,8 @@
 
 .label {
   color: var(--Text-Dark-Grey, #222);
-  font-family: Inter;
+  display: block;
+  font-family: 'Inter';
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
@@ -171,36 +177,7 @@ button {
   height: 100%;
 }
 
-#stripe-token-handler {
-  position: absolute;
-  top: 0;
-  left: 25%;
-  right: 25%;
-  padding: 20px 30px;
-  border-radius: 0 0 4px 4px;
-  box-sizing: border-box;
-  box-shadow: 0 50px 100px rgba(50, 50, 93, 0.1),
-    0 15px 35px rgba(50, 50, 93, 0.15),
-    0 5px 15px rgba(0, 0, 0, 0.1);
-  -webkit-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
-  transform: translateY(0);
-  opacity: 1;
-  background-color: white;
-}
 
-#stripe-token-handler.is-hidden {
-  opacity: 0;
-  transform: translateY(-80px);
-}
-
-/* charge card form */
-#charge-card {
-  height: 0;
-}
-#go-back {
-  margin-top: 20px;
-}
 
 .spinner-container {
   display: flex;
@@ -294,42 +271,15 @@ button {
  * The CSS shown here will not be introduced in the Quickstart guide, but shows
  * how you can use CSS to style your Element's container.
  */
-.StripeElement {
-  width: 392px;
+.input {
+  width: 62px;
   padding: 12px 16px;
   border-radius: 12px;
+  font-family: Inter;
   border: 1px solid var(--Text-Extra-Light-Grey, #D3D3D3);
   background: var(--White, #FFF);
 }
 
-.card_expiry {
-  width: 88px;
-  
-}
-
-.card_cvc {
-  width: 62px;
-  text-align: center;
-}
-
-.StripeElement--focus {
-  border-color: var(--Accent-Violet, #6749E6);
-}
-
-.StripeElement--invalid {
-  border-color: #fa755a;
-}
-
-.StripeElement--webkit-autofill {
-  background-color: #fefde5 !important;
-}
-
-.stripe-items-table {
-  width: 100%;
-  border-bottom: 1px solid var(--Background-Grey, #F2F2F2);
-  margin-bottom: 14px;
-
-}
 
 .table_head {
   color: var(--Text-Light-grey, #B8B8B8);
@@ -388,7 +338,7 @@ button {
 
 .totals-div {
   color: var(--Text-Dark-Grey, #222);
-  font-family: Inter;
+  font-family: 'Inter';
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -396,13 +346,164 @@ button {
   margin-left: auto;
 }
 
+.title-curr {
+  color:  #222;
+  font-size: 20px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 100% */
+  letter-spacing: -0.4px;
+}
+
+.payment-info-block {
+  display: flex;
+  padding: 24px;
+  align-items: center;
+  gap: 24px;
+  align-self: stretch;
+  border-radius: 12px;
+  background:  #FBFBFB;
+
+  margin: 40px 0;
+}
+
+.payment-info-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.payment-select-block {
+  display: flex;
+  width: 240px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 6px;
+  align-self: stretch;
+
+}
+
+.value-name {
+  color:  #B8B8B8;
+  font-family: 'Inter';
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px; /* 120% */
+  letter-spacing: 0.1px;
+}
+
+.value-data {
+  color: #222;
+  font-family: 'Inter';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+}
+
+.dropdown {
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+
+  max-width: 210px;
+}
+
+.dropdown__switch:checked + .dropdown__options-filter .dropdown__select {
+  transform: scaleY(1);
+  opacity: 1;
+}
+
+.dropdown__switch:checked + .dropdown__options-filter .dropdown__filter::after {
+  transform: rotate(-135deg);
+}
+
+.dropdown__options-filter {
+  width: 100%;
+  cursor: pointer;
+}
+
+.dropdown__filter {
+  display: flex;
+  max-height: 48px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+
+  position: relative;
+
+  border-radius: 12px;
+  border: 1px solid  #D3D3D3;
+  background:  #FFF;
+}
+
+.dropdown__filter:focus {
+  outline: none;
+}
+
+.dropdown__filter::after {
+  position: absolute;
+  top: 45%;
+  right: 20px;
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-right: 1px solid #595959;
+  border-bottom: 1px solid #595959;
+  transform: rotate(45deg) translateX(-45%);
+  transition: 0.3s ease-in-out;
+}
+
+.dropdown__select {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 5px;
+  overflow: hidden;
+  transform: scaleY(0);
+  transform-origin: top;
+  border-radius: 18px;
+  opacity: 0;
+  transition: 0.2s ease-in-out;
+
+  border: 1px solid  #D3D3D3;
+}
+
+.dropdown__select-option {
+  padding: 12px;
+  background-color: #fff;
+  border-bottom: 1px solid #e9ecef;
+  transition: 0.3s;
+}
+
+.dropdown__select-option:last-of-type {
+  border-bottom: 0;
+}
+
+.dropdown__select-option:hover {
+  background-color: #e9ecef;
+}
+
+
 @media screen and (max-width: 1024px) {
   .wrap {
     padding: 64px 15%;
   }
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 769px) {
+
+  .payment-info-block {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
   .wrap {
     padding: 64px 12%;
