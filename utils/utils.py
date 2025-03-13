@@ -40,9 +40,12 @@ def check_transactions_hash(
         webhook_access_key: str,
         webhook_private_key: str,
         transaction_signature, **kwargs) -> bool:
-    transactions_json = json.dumps(transactions, ensure_ascii=False)
+    transactions_json = json.dumps(
+        transactions,
+        ensure_ascii=False,
+        separators=(',', ':'))
+    md5_hash = hashlib.md5(transactions_json.encode('utf-8')).hexdigest()
     signature = hashlib.sha1((
-        webhook_access_key + webhook_private_key + hashlib.md5(
-            transactions_json.encode()).hexdigest()).encode()).hexdigest()
+        webhook_access_key + webhook_private_key + md5_hash).encode('utf-8')).hexdigest()
     if signature != transaction_signature:
         raise Exception('Hash is not valid - invoive %s' % kwargs.get('invoice'))
