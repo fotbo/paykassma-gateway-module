@@ -122,17 +122,24 @@
 </div>
 </body>
 <script>
-  const payment_info_price = document.querySelector('.payment_info_price')
-  const text = payment_info_price?.innerHTML
-    if(text) {
-        const numbers = text.match(/([\d.]+)/g);
-        const numericValues = numbers?.map(Number);
+  const payment_info_price = document.querySelector('.payment_info_price');
+  const text = payment_info_price?.innerHTML;
 
+  if (text) {
+      const match = text.match(/Pay\s*€([\d,]+\.?\d*)\s*for invoice (\d+)/);
+      
+      if (match) {
+          // Прибираємо кому в числі, щоб коректно його перетворити в число
+          const amount = parseFloat(match[1].replace(/,/g, ''));
+          const invoice = match[2];
 
-        if(numericValues && numericValues?.length > 1) {
-            payment_info_price.innerHTML = `<span class="payment_info_price_pay">Pay</span> <span class="payment_info_price_price">€${numericValues[0]?.toFixed(2)}</span> <span class="payment_info_price_invoice">for invoice ${numericValues[1]}</span>`
-        }
-
-    }
+          payment_info_price.innerHTML = `
+              <span class="payment_info_price_pay">Pay</span> 
+              <span class="payment_info_price_price">€${amount.toFixed(2)}</span> 
+              <span class="payment_info_price_invoice">for invoice ${invoice}</span>
+          `;
+      }
+  }
+</script>
 </script>
 </html>
